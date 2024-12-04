@@ -18,7 +18,7 @@
         }
 
         body {
-            background: #333333;
+            background: #000000;
         }
     </style>
 </head>
@@ -34,7 +34,7 @@
 
     let width = d3.select("#map").node().getBoundingClientRect().width
     let height = 500
-    const sensitivity = 75
+    const sensitivity = 30
 
     let projection = d3.geoOrthographic()
         .scale(250)
@@ -52,32 +52,32 @@
         .attr("height", height)
 
     let globe = svg.append("circle")
-        .attr("fill", "#333333")
+        .attr("fill", "#000")
         .attr("stroke", "#000")
         .attr("stroke-width", "0")
         .attr("cx", width / 2)
         .attr("cy", height / 2)
         .attr("r", initialScale)
 
-    svg.call(d3.drag().on('drag', () => {
+    svg.call(d3.drag().on('drag', (event) => {
         const rotate = projection.rotate()
         const k = sensitivity / projection.scale()
         projection.rotate([
-            rotate[0] + d3.event.dx * k,
-            rotate[1] - d3.event.dy * k
+            rotate[0] + event.dx * k,
+            rotate[1] - event.dy * k
         ])
         path = d3.geoPath().projection(projection)
         svg.selectAll("path").attr("d", path)
     }))
-        .call(d3.zoom().on('zoom', () => {
-            if (d3.event.transform.k > 0.3) {
-                projection.scale(initialScale * d3.event.transform.k)
+        .call(d3.zoom().on('zoom', (event) => {
+            if (event.transform.k > 0.3) {
+                projection.scale(initialScale * event.transform.k)
                 path = d3.geoPath().projection(projection)
                 svg.selectAll("path").attr("d", path)
                 globe.attr("r", projection.scale())
             }
             else {
-                d3.event.transform.k = 0.3
+                event.transform.k = 0.3
             }
         }))
 
@@ -92,8 +92,8 @@
         .enter().append("path")
         .attr("class", d => "country_" + d.properties.name.replace(" ", "_"))
         .attr("d", path)
-        .attr("fill", "#111111")
-        .style('stroke', '#222222')
+        .attr("fill", "#333333")
+        .style('stroke', '#444444')
         .style('stroke-width', 0.3)
         .style("opacity", 0.8)
 
